@@ -19,6 +19,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import moment from 'moment';
 
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { HttpClientModule } from '@angular/common/http';
+
+
+
 @NgModule({
   declarations: [
     AppComponent
@@ -30,8 +36,11 @@ import moment from 'moment';
       provide: DateAdapter,
       useFactory: adapterFactory
     }),
+    ReactiveFormsModule,
     SchedulerModule.forRoot({ locale: 'en', headerDateFormat: 'daysRange', logEnabled: true }),
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    HttpClientModule
+
   ],
   providers: [
     AppService,

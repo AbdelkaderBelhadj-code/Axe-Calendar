@@ -127,3 +127,55 @@
         </calendar-scheduler-view>
     </div>
 </div>
+
+<div class="main-content">
+    <div class="card mx-auto" style="width: 50em;">
+      <div class="card-body">
+          <h4 class="card-title">Team Members</h4>
+          <ul class="list-group">
+              <li class="list-group-item list-header">
+                  <div class="column-label">Full Name</div>
+                  <div class="column-label">Grade</div>
+              </li>
+              <li class="list-group-item" *ngFor="let employee of employees">
+                  <div class="column">{{ employee.fullName }}</div>
+                  <div class="column">{{ employee.grade }}</div>
+                  <button class="btn btn-danger" (click)="deleteTeamMember(employee)">Delete</button>
+              </li>
+          </ul>
+      </div>
+  </div>
+  
+</div>
+  
+
+<div class="center-container">
+    <div class="card mx-auto" style="width: 50em;">
+    <div class="card-body">
+        <h4 class="card-title">Add Team Member</h4>
+        <form class="forms-sample" [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input class="form-control" [(ngModel)]="employee.fullName" type="text" formControlName="fullName">
+                &nbsp;
+                <div class="alert alert-danger" *ngIf="form.controls['fullName'].invalid && form.controls['fullName'].touched">
+                    <p *ngIf="form.controls['fullName'].hasError('required')">Full Name is required!</p>
+                    <p *ngIf="form.controls['fullName'].hasError('minlength')">Minimum length is 3 chars!</p>
+                    <p *ngIf="form.controls['fullName'].hasError('maxlength')">Maximum length is 10 chars!</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="grade">Grade</label>
+                <select class="form-control" [(ngModel)]="employee.grade" formControlName="grade">
+                    <option *ngFor="let grade of gradeOptions | keyvalue" [ngValue]="grade.value">{{ grade.key }}</option>
+                  </select>
+                  <div class="alert alert-danger" *ngIf="form.controls['grade'].invalid && form.controls['grade'].touched">
+                    <p *ngIf="form.controls['grade'].hasError('required')">Grade is required</p>
+                  </div>
+                </div>
+
+            <button type="submit" [disabled]="form.invalid" class="btn btn-primary me-2">Confirm</button>
+            <button class="btn btn-light" routerLink="/home">Cancel</button>
+        </form>
+    </div>
+</div>

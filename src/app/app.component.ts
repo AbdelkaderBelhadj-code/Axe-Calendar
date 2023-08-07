@@ -1,5 +1,12 @@
 import { Component, OnInit, Inject, LOCALE_ID, HostListener, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
+import { TeammemberService } from 'src/app/services/teammember.service';
+import { FormBuilder, FormGroup ,Validators} from '@angular/forms';
+import { grades } from 'src/app/models/grade';
+import { Employee } from 'src/app/models/employee';
+
+
+
 
 import {
     endOfDay,
@@ -38,9 +45,14 @@ import { AppService } from './services/app.service';
     }]
 })
 export class AppComponent implements OnInit {
+    public form! : FormGroup
+    public employee: Employee = { id:0 ,fullName: '', grade: grades.F1 }; // Initialize the employee object
+    public gradeOptions = grades; 
+
     title: string = 'Axe Calendar Demo';
 
     CalendarView = CalendarView;
+    employees: Employee[] = [];
 
     view: CalendarView = CalendarView.Week;
     viewDate: Date = new Date();
@@ -87,7 +99,7 @@ export class AppComponent implements OnInit {
 
     @ViewChild(CalendarSchedulerViewComponent) calendarScheduler: CalendarSchedulerViewComponent;
 
-    constructor(@Inject(LOCALE_ID) locale: string, private appService: AppService, private dateAdapter: DateAdapter) {
+    constructor(@Inject(LOCALE_ID) locale: string, private appService: AppService, private dateAdapter: DateAdapter,private teamservice : TeammemberService,  private formBuilder: FormBuilder) {
         this.locale = locale;
 
         // this.dayModifier = ((day: SchedulerViewDay): void => {
@@ -112,6 +124,10 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.appService.getEvents(this.actions)
             .then((events: CalendarSchedulerEvent[]) => this.events = events);
+            this.form = this.formBuilder.group({
+                fullName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+                grade: ['', [Validators.required]],
+              })
     }
 
     viewDaysOptionChanged(viewDays: number): void {
@@ -183,4 +199,50 @@ export class AppComponent implements OnInit {
         ev.end = newEnd;
         this.refresh.next();
     }
+
+    submit() {
+        this.employee.fullName = this.form.value.fullName;
+        this.employee.grade = this.form.value.grade;
+    
+        this.teamservice.addTeamMember(this.employee).subscribe({
+          next: (response: number) => {
+            console.log('Team member added with ID: ', response);
+          },
+          error: (error) => {
+            console.error('Error adding team member:', error);
+          },
+          complete: () => {
+            console.log('Complete');
+          }
+        });
+    }
+
+ fetchAllFormules(): void {
+    this.teamservice.getAllTeamMembers().subscribe(
+      (employeees:Employee[]) => {
+        this.employees = employeees;
+        console.log(this.employees)
+      },
+      (error) => {
+        console.error('Error fetching formules', error);
+      }
+    );
+  }
+  deleteTeamMember(formule: Employee): void {
+    const confirmDelete = confirm(`Are you sure you want to delete ${formule.fullName}?`);
+    if (confirmDelete) {
+      this.teamservice.deleteEmployee(formule.id).subscribe(
+        () => {
+          // Remove the deleted team member from the array
+          this.employees = this.employees.filter(member => member.id !== formule.id);
+        },
+        (error) => {
+          console.error('Error deleting team member:', error);
+        }
+      );
+    }
+  }
+  
+    
 }
+
