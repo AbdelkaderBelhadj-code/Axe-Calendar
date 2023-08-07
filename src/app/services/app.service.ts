@@ -42,7 +42,7 @@ export class AppService {
                 start: subHours(addDays(startOfHour(new Date()), 1), 1),
                 end: subHours(addDays(addHours(startOfHour(new Date()), 1), 1), 1),
                 title: 'Event 12 (draggable)',
-                content: 'IMPORTANT EVENT',
+                content: 'IMPORTANT TO OFFICER',
                 color: { primary: '#E0E0E0', secondary: '#EEEEEE' },
                 actions: actions,
                 status: 'danger' as CalendarSchedulerEventStatus,

@@ -18,12 +18,10 @@ import { AppService } from './services/app.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import moment from 'moment';
-import { AddEmployeeComponent } from './components/add-employee/add-employee.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AddEmployeeComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
